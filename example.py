@@ -20,10 +20,9 @@ import sys
 import time
 
 # cluster specification
-parameter_servers = ["pc-01:2222"]
-workers = [	"pc-02:2222", 
-			"pc-03:2222",
-			"pc-04:2222"]
+parameter_servers = ["m.tensorflow.cmu849.emulab.net:2222"]
+workers = [	"s-1.tensorflow.cmu849.emulab.net:2222",
+		"s-2.tensorflow.cmu849.emulab.net:2222"]
 cluster = tf.train.ClusterSpec({"ps":parameter_servers, "worker":workers})
 
 # input flags
@@ -151,11 +150,14 @@ elif FLAGS.job_name == "worker":
 			count = 0
 			for i in range(batch_count):
 				batch_x, batch_y = mnist.train.next_batch(batch_size)
-				
-				# perform the operations we defined earlier on batch
-				_, cost, summary, step = sess.run(
-												[train_op, cross_entropy, summary_op, global_step], 
-												feed_dict={x: batch_x, y_: batch_y})
+				if i % 100 == 99:
+					run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
+			
+					# perform the operations we defined earlier on batch
+					_, cost, summary, step = sess.run([train_op, cross_entropy, summary_op, global_step], feed_dict={x: batch_x, y_: batch_y}, options=run_options)
+				else:
+					
+					_, cost, summary, step = sess.run([train_op, cross_entropy, summary_op, global_step], feed_dict={x: batch_x, y_: batch_y})
 				writer.add_summary(summary, step)
 
 				count += 1
