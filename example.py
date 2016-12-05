@@ -22,7 +22,7 @@ import time
 # cluster specification
 parameter_servers = ["m.tensorflow.cmu849.emulab.net:2222"]
 workers = [	"s-1.tensorflow.cmu849.emulab.net:2222",
-		"s-2.tensorflow.cmu849.emulab.net:2222"]
+		"s-3.tensorflow.cmu849.emulab.net:2222"]
 cluster = tf.train.ClusterSpec({"ps":parameter_servers, "worker":workers})
 
 # input flags
